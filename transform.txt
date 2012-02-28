@@ -1,0 +1,13 @@
+module do {
+V1 << operation1 ;;
+operation2 ;;
+V3 << operation3 ;;
+operation4 V1 V2
+}
+
+operation1 >>=( \V1 =
+	operation2 >>
+		operation3 >>=( \V3
+			operation4 V1 V2
+		)
+)
