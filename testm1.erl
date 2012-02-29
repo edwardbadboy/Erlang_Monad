@@ -63,8 +63,8 @@ teststack()-> ST = stm do {
 	A << pop();;
 	push(A+1);;
 	B << stm:sget();;
-	fun()->io:format("stack now ~w~n",[B]),
-			stm:sput([8,8,8]) end();;
+	io:format("stack now ~w~n",[B]),
+	stm:sput([8,8,8]);;
 	push(5)
 },
 stm:run(ST,[3,2,1]).

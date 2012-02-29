@@ -17,11 +17,11 @@ char *dupunboxedname(const char* text, long length);
 
 %%
 
-[a-z][a-zA-Z0-9_]*[\t ]+"do"[\t ]+ { BEGIN(DO_M); gmodule=dup1stword(yytext); printf("%s:bind( (",gmodule); ++gmdepth; }
+[a-z][a-zA-Z0-9_]*[\t ]+"do"[\t ]+ { BEGIN(DO_M); gmodule=dup1stword(yytext); printf("%s:bind( ( fun()->",gmodule); ++gmdepth; }
 <DO_M>"{" { ++gdepth; if(gdepth>1){ ECHO; } }
-<DO_M>"}" { --gdepth; if(0!=gdepth){ ECHO;} else { printf("), fun %s:return/1)\n", gmodule); --gmdepth; while(gmdepth>0){printf("end)\n");--gmdepth;} BEGIN(INITIAL); free(gmodule); gmodule=NULL;} }
+<DO_M>"}" { --gdepth; if(0!=gdepth){ ECHO;} else { printf(" end()), fun %s:return/1)\n", gmodule); --gmdepth; while(gmdepth>0){printf("end)\n");--gmdepth;} BEGIN(INITIAL); free(gmodule); gmodule=NULL;} }
 <DO_M>.*"<<" { gv=dupunboxedname(yytext, yyleng); }
-<DO_M>";;" { printf("\n), fun( (%s) )-> ",gv?gv:"_"); free(gv); gv=NULL; printf("%s:bind( (",gmodule); ++gmdepth; }
+<DO_M>";;" { printf(" end()\n), fun( (%s) )-> ",gv?gv:"_"); free(gv); gv=NULL; printf("%s:bind( ( fun()->",gmodule); ++gmdepth; }
 <DO_M>.|\n { ECHO; }
 .|\n { ECHO; }
 
