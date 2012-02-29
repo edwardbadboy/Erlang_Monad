@@ -12,7 +12,7 @@ bind(#maybe{just=Value}, Func) when is_function(Func,1)->
 	Func(Value).
 
 pass(X, Y) when is_record(X,maybe), is_record(Y,maybe)->
-	bind(fun(_)->Y end, X).
+	bind(X, fun(_)->Y end).
 
 concat(Maybe, Funs)when is_list(Funs) ->
 	lists:foldl(fun(F, X)->bind(X, F) end, Maybe, Funs).
