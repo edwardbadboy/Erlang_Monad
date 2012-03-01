@@ -15,3 +15,6 @@ compile erlang source code
 	just compile maybem.erl, listm.erl, stm.erl as uasual
 	do not compile testm1.erl. first, use do notation transformer to
 	translate it into a normal erlang source file then compile it
+
+the blog post
+	http://hi.baidu.com/%B2%BB%D5%FD%D6%B1%B5%C4%C8%CB/blog/item/884f2ec8961abe087e3e6f25.html
