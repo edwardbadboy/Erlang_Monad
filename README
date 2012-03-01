@@ -1,0 +1,17 @@
+prerequisite
+	gnu flex
+	erlang
+	make
+	gcc
+
+compile do notation transformer
+	just run "make"
+
+
+run do notation transformer
+	just run "./do_notation_tran <testm1.erl >testm.erl"
+
+compile erlang source code
+	just compile maybem.erl, listm.erl, stm.erl as uasual
+	do not compile testm1.erl. first, use do notation transformer to
+	translate it into a normal erlang source file then compile it
