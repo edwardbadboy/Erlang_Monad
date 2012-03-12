@@ -1,5 +1,5 @@
 -module(testm).
--export([testmaybem/0, testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, teststack/0]).
+-export([ll/2, lr/2, testmaybem/0, testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, teststack/0, testcallcc/0, factor/1]).
 -include("maybem.hrl").
 -include("stm.hrl").
 
@@ -68,3 +68,63 @@ teststack()-> ST = stm do {
 	push(5)
 },
 stm:run(ST,[3,2,1]).
+
+testcallcc()-> C = contm do {
+	erlang:put(i,0),
+	contm:callcc(fun(K)-> contm do {
+						erlang:put(conti,K),
+						contm:return({})
+					} end) ;;
+	erlang:put(i,erlang:get(i)+1),
+	contm:return(erlang:get(i))
+},
+contm:run(C, fun(X)->X end).
+
+pushcont(Newcont)->
+	L=case erlang:get(checkpoint) of
+		undefined->[];
+		List->List
+	end,
+	erlang:put(checkpoint, [Newcont|L]).
+
+popcont()->
+	[H|T]=erlang:get(checkpoint),
+	erlang:put(checkpoint, T),
+	H.
+
+clearcont()->erlang:erase(checkpoint).
+
+guess()-> contm do {
+	contm:callcc(
+		fun(K)-> contm do {
+			pushcont(K), contm:return(true)
+		} end )
+}.
+
+fail()-> contm do {
+	K=popcont(),
+	K(false)
+}.
+
+integer_r(A,B) when A=<B -> contm do {
+	R << guess();;
+	if(R)-> contm:return(A); true->integer_r(A+1,B) end
+};
+integer_r(A,B) when A>B -> contm do {
+	fail()
+}.
+
+factor(N)-> C = contm do{
+	I << integer_r(2, 100);;
+	J << integer_r(2, I);;
+	%case {I,J} of
+		%{100,100}->
+			%ok;
+		%_ ->ok
+	%end,
+	case I*J of
+		N -> contm:return({I,J});
+		_ -> fail()
+	end
+},
+R=contm:run(C,fun(X)->X end),clearcont(),R.
