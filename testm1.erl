@@ -1,5 +1,5 @@
 -module(testm).
--export([ll/2, lr/2, testmaybem/0, testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, teststack/0, testcallcc/0, factor/1]).
+-export([ll/2, lr/2, testmaybem/0, testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, teststack/0, factor/1]).
 -include("maybem.hrl").
 -include("stm.hrl").
 
@@ -68,17 +68,6 @@ teststack()-> ST = stm do {
 	push(5)
 },
 stm:run(ST,[3,2,1]).
-
-testcallcc()-> C = contm do {
-	erlang:put(i,0),
-	contm:callcc(fun(K)-> contm do {
-						erlang:put(conti,K),
-						contm:return({})
-					} end) ;;
-	erlang:put(i,erlang:get(i)+1),
-	contm:return(erlang:get(i))
-},
-contm:run(C, fun(X)->X end).
 
 pushcont(Newcont)->
 	L=case erlang:get(checkpoint) of
