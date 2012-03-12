@@ -117,11 +117,6 @@ integer_r(A,B) when A>B -> contm do {
 factor(N)-> C = contm do{
 	I << integer_r(2, 100);;
 	J << integer_r(2, I);;
-	%case {I,J} of
-		%{100,100}->
-			%ok;
-		%_ ->ok
-	%end,
 	case I*J of
 		N -> contm:return({I,J});
 		_ -> fail()
