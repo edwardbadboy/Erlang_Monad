@@ -1,5 +1,8 @@
 -module(testm).
--export([ll/2, lr/2, testmaybem/0, testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, teststack/0, factor/1]).
+-export([ll/2, lr/2, testmaybem/0,
+		testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2,
+		teststack/0,
+		factor2/1, factors/1, testcallcc/0]).
 -include("maybem.hrl").
 -include("stm.hrl").
 
@@ -95,20 +98,46 @@ fail()-> contm do {
 	K(false)
 }.
 
-integer_r(A,B) when A=<B -> contm do {
+integer_r(A,B) when is_integer(A), is_integer(B), A=<B -> contm do {
 	R << guess();;
 	if(R)-> contm:return(A); true->integer_r(A+1,B) end
 };
-integer_r(A,B) when A>B -> contm do {
+integer_r(_,_) -> contm do {
 	fail()
 }.
 
-factor(N)-> C = contm do{
-	I << integer_r(2, 100);;
+factor2_try(N)-> contm do{
+	I << integer_r(2, N);;
 	J << integer_r(2, I);;
 	case I*J of
-		N -> contm:return({I,J});
+		N -> contm:return([I,J]);
 		_ -> fail()
 	end
+}.
+
+factor2(N)-> C= contm do{
+	R << guess();;
+	case R of
+		true-> factor2_try(N);
+		_ -> contm:return([N])
+	end
 },
-R=contm:run(C,fun(X)->X end),clearcont(),R.
+contm:run(C, fun(X)->clearcont(),X end).
+
+factors(N)->
+	case factor2(N) of
+		[N]->[N];
+		[F1,F2]->lists:append(factors(F1),factors(F2))
+	end.
+
+testcallcc()-> C = contm do{
+	X << contm:callcc(
+		fun(E)-> contm do {
+			erlang:put(exitp,E),
+			E(10);;
+			contm:return(20)
+		} end
+	);;
+	contm:return(X*X)
+},
+contm:final(C).
