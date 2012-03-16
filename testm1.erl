@@ -1,6 +1,6 @@
 -module(testm).
 -export([ll/2, lr/2, testmaybem/0,
-		testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2,
+		testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, combinationl/2,
 		teststack/0,
 		factor2/1, factors/1, testcallcc/0, combination/2]).
 -include("maybem.hrl").
@@ -58,6 +58,16 @@ kmove3(Start)-> listm do {
 }.
 
 kin3move(Start,End)-> lists:member(End, kmove3(Start)).
+
+combl(_Start, _End, 0=_Select, R)-> listm:return(lists:reverse(R));
+combl(Start, End, Select, R)-> listm do {
+	listm:guard( Select>0 andalso Select=<(End-Start+1) );;
+	I << lists:seq(Start, End);;
+	combl(I+1, End, Select-1, [I|R])
+}.
+
+combinationl(Total, Select)->
+	combl(1, Total, Select, []).
 
 pop()->#st{s=fun([H|T])->{H,T}end}.
 push(X)->#st{s=fun(L)->{{},[X|L]}end}.
