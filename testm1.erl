@@ -2,7 +2,7 @@
 -export([ll/2, lr/2, testmaybem/0,
 		testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2,
 		teststack/0,
-		factor2/1, factors/1, testcallcc/0]).
+		factor2/1, factors/1, testcallcc/0, combination/2]).
 -include("maybem.hrl").
 -include("stm.hrl").
 
@@ -141,3 +141,20 @@ testcallcc()-> C = contm do{
 	contm:return(X*X)
 },
 contm:final(C).
+
+comb(_Start, _End, Select, R) when Select=:=0 -> contm do{
+	io:format("~w~n",[lists:reverse(R)]),
+	fail()
+};
+comb(Start, End, Select, R) when Select>0, Select=<(End-Start+1) -> contm do{
+	I << integer_r(Start, End);;
+	comb(I+1, End, Select-1, [I|R])
+};
+comb(_Start, _End, _Select, _R) -> contm do{
+	fail()
+}.
+
+combination(Total, Select)-> C = contm do{
+	R << guess();;
+	if R -> comb(1, Total, Select, []); true->contm:return(ok) end
+}, contm:run(C, fun(X)->clearcont(),X end).
