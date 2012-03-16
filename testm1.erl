@@ -142,7 +142,7 @@ testcallcc()-> C = contm do{
 },
 contm:final(C).
 
-comb(_Start, _End, Select, R) when Select=:=0 -> contm do{
+comb(_Start, _End, 0=_Select, R) -> contm do{
 	io:format("~w~n",[lists:reverse(R)]),
 	fail()
 };
