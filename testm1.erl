@@ -2,7 +2,7 @@
 -export([ll/2, lr/2, testmaybem/0,
 		testlistm/0, pyth/1, kmove/1, kmove3/1, kin3move/2, combinationl/2, combinationl2/2,
 		teststack/0,
-		factor2/1, factors/1, testcallcc/0, combination/2]).
+		factor2/1, factors/1, testcallcc1/0, testcallcc2/0, combination/2]).
 -include("maybem.hrl").
 -include("stm.hrl").
 
@@ -151,7 +151,7 @@ factors(N)->
 		[F1,F2]->lists:append(factors(F1),factors(F2))
 	end.
 
-testcallcc()-> C = contm do{
+testcallcc1()-> C = contm do{
 	X << contm:callcc(
 		fun(E)-> contm do {
 			erlang:put(exitp,E),
@@ -160,6 +160,11 @@ testcallcc()-> C = contm do{
 		} end
 	);;
 	contm:return(X*X)
+},
+contm:final(C).
+
+testcallcc2()-> C = contm do{
+	E=erlang:get(exitp), E(11)
 },
 contm:final(C).
 
